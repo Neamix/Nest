@@ -1,6 +1,6 @@
 name: Manual Build
 on: 
-  workflow_dispatch:
+  workflow_dispatch: 
     inputs: 
       environment:
         description: 'Environment to deploy to'
@@ -10,6 +10,7 @@ on:
         options:
           - staging
           - production
+jobs:
   build:
     runs-on: ubuntu-latest
     steps:
@@ -22,6 +23,6 @@ on:
       - name: Install dependencies
         run: npm install
 
-      - name: Emit the event 
-        run: | 
-          echo "Installed dependencies for ${{ github.event.inputs.environment }} environment"
+      - name: Emit the event
+        run: |
+          echo "Installed dependencies for ${{ inputs.environment }} environment"
