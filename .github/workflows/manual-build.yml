@@ -1,0 +1,28 @@
+name: Manual Build
+on: 
+  workflow_dispatch:
+jobs:
+  inputs: 
+    enviroment:
+      description: 'Environment to deploy to'
+      required: true
+      default: 'staging'
+      type: choice
+      options:
+        - staging
+        - production
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '24.5'
+      - name: Install dependencies
+        run: npm install
+
+      - name: Emit the event 
+        run: | 
+          echo "Installed dependencies for ${{ github.event.inputs.environment }} environment"
