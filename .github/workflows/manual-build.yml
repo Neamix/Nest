@@ -16,12 +16,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Emit the event
-        run: |
-          echo "::notice::Installed dependencies for ${{ inputs.environment }} environment"
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '24.5'
       - name: Install dependencies
         run: npm install
+      - name: Emit the event
+        run: echo "Installed dependencies for ${{ inputs.environment }} environment"
