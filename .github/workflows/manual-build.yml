@@ -1,16 +1,15 @@
 name: Manual Build
 on: 
   workflow_dispatch:
-jobs:
-  inputs: 
-    enviroment:
-      description: 'Environment to deploy to'
-      required: true
-      default: 'staging'
-      type: choice
-      options:
-        - staging
-        - production
+    inputs: 
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
   build:
     runs-on: ubuntu-latest
     steps:
