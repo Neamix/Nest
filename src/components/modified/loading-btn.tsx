@@ -7,9 +7,8 @@ export default function LoadingButton({
     loading?: boolean
 }) {
     return (
-        <Button type="submit" className="w-full font-semibold">
+        <Button type="submit" className={"w-full font-semibold " + (loading ? "btn-inactive" : "")} disabled={loading} >
             Sign In Nest Grocery
-            {loading && <span>loading...</span>}
         </Button>
     )
 }

@@ -9,26 +9,32 @@ import LoadingButton from "@/components/modified/loading-btn"
 import InputPassword from "@/components/modified/input-password"
 import { useActionState } from "react"
 
-function LoginForm({
+export default function LoginForm({
     className,
 }: {
     className?: string
 }) {
     // Submit form data
-    let handleLoginAction = async (formData: FormData) => {
+    let handleLoginAction = async (previousState: any, formData: FormData) => {
         let email = formData.get("email")?.toString();
         let password = formData.get("password")?.toString();
 
-        console.log("Email:", email);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        // Return the new state
+        return {
+            email: formData.get("email"),
+            password: formData.get("password")
+        };
     }
-    
-    const [state, formAction, isPending] = useActionState(handleLoginAction, {})
+
+    const [state, formAction, isPending] = useActionState(handleLoginAction, { email: "", password: "" })
 
     return (
         <div className={cn("flex flex-col justify-center h-screen gap-6 sm-container m-auto font-lato", className)}>
             <Card className="overflow-hidden p-0">
                 <CardContent className="grid p-0 md:grid-cols-2">
-                    <form className="p-6 md:p-8">
+                    <form className="p-6 md:p-8" action={formAction}>
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col items-start text-start">
                                 <div className="mb-4 flex items-center space-x-2">
@@ -44,8 +50,10 @@ function LoginForm({
                                 <Input
                                     id="email"
                                     type="email"
+                                    name="email"
                                     placeholder="m@example.com"
                                     required
+                                    defaultValue={state.email ? String(state.email) : ""}
                                 />
                             </div>
                             <div className="grid gap-3">
@@ -59,13 +67,17 @@ function LoginForm({
                                     </a>
                                 </div>
                                 <div className="relative w-full">
-                                    <InputPassword />
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        name="password"
+                                        defaultValue={state.password ? String(state.password) : ""}
+                                        required
+                                    />
                                 </div>
                             </div>
 
-                
-
-                            <LoadingButton loading={true} />
+                            <LoadingButton loading={isPending} />
 
                             <div className="text-center text-sm">
                                 Don&apos;t have an account?{" "}
@@ -73,6 +85,7 @@ function LoginForm({
                                     Sign up
                                 </a>
                             </div>
+                            
                         </div>
                     </form>
                     <div className="bg-muted relative hidden md:block bg-gradient-to-t from-neutral-900 to-neutral-500">
@@ -101,6 +114,3 @@ function LoginForm({
     )
 }
 
-export default function LoginPage() {
-    return <LoginForm />
-}
