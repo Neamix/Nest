@@ -10,6 +10,7 @@ import { useActionState, useState } from "react"
 import { UserLoginType } from "@/modules/Authentication/types";
 import { loginAction } from "@/modules/Authentication/Actions/LoginActions"
 import validateFields from "@/lib/validation"
+import InputPassword from "@/components/modified/input-password"
 
 export default function LoginForm({
     className,
@@ -26,9 +27,9 @@ export default function LoginForm({
 
     // Action handler for form submission
     const handleLoginAction = async (previousState: UserLoginType, formData: FormData) => {
-        const email = formData.get("email")?.toString() || "";
-        const password = formData.get("password")?.toString() || "";
-        const device_token = "test_token";
+        const email:string = formData.get("email")?.toString() || "";
+        const password:string = formData.get("password")?.toString() || "";
+        const device_token:string = "test_token";
 
         // Reset previous errors
         setLoginError({email: "", password: ""});
@@ -46,11 +47,11 @@ export default function LoginForm({
         }
 
         // Call the login action
-        await loginAction({email,password,device_token,fn:setLoginErrorMsg});
+        const userData:UserLoginType = await loginAction({email,password,device_token,fn:setLoginErrorMsg});
 
         return {
-            email: email ?? previousState.email,
-            password: password ?? previousState.password,
+            email: userData.email ?? previousState.email,
+            password: userData.password ?? previousState.password,
             device_token: device_token ?? "",
         }
         
@@ -99,18 +100,17 @@ export default function LoginForm({
                                     </a>
                                 </div>
                                 <div className="relative w-full">
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        name="password"
-                                        defaultValue={state.password ? String(state.password) : ""}
+                                   <InputPassword
+                                       id="password"
+                                       name="password"
+                                       defaultValue={state.password ? String(state.password) : ""}
                                     />
 
                                     <span className="error">{loginError.password}</span>
                                 </div>
                             </div>
-                            
                             <p>{ loginErrorMsg && <span className="error">{loginErrorMsg}</span> }</p>
+                            <p>{ loginError && <span className="error">{loginErrorMsg}</span> }</p>
 
                             <LoadingButton loading={isPending} />
 
