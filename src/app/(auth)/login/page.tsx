@@ -6,29 +6,61 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import LoadingButton from "@/components/modified/loading-btn"
-import InputPassword from "@/components/modified/input-password"
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
+import { UserLoginType } from "@/modules/Authentication/types";
+import { loginAction } from "@/modules/Authentication/Actions/LoginActions"
+import validateFields from "@/lib/validation"
 
 export default function LoginForm({
     className,
 }: {
     className?: string
 }) {
-    // Submit form data
-    let handleLoginAction = async (previousState: any, formData: FormData) => {
-        let email = formData.get("email")?.toString();
-        let password = formData.get("password")?.toString();
+    // Validate the form fields
+    const validateLoginForm = (email: string, password: string) => {
+        return validateFields([
+            { name: "Email", value: email, rules: { required: true, email: true } },
+            { name: "Password", value: password, rules: { required: true } }
+        ]);
+    };
 
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Action handler for form submission
+    const handleLoginAction = async (previousState: UserLoginType, formData: FormData) => {
+        const email = formData.get("email")?.toString() || "";
+        const password = formData.get("password")?.toString() || "";
+        const device_token = "test_token";
 
-        // Return the new state
+        // Reset previous errors
+        setLoginError({email: "", password: ""});
+
+        // Validate fields; returns an object like { Email: string[], Password: string[] }
+        const validationErrors = validateLoginForm(email, password);
+
+        // If any field has errors, return the current values
+        if (Object.keys(validationErrors).length > 0) {
+            setLoginError({
+                email: validationErrors.Email?.[0],
+                password: validationErrors.Password?.[0]
+            });
+            return previousState;
+        }
+
+        // Call the login action
+        await loginAction({email,password,device_token,fn:setLoginErrorMsg});
+
         return {
-            email: formData.get("email"),
-            password: formData.get("password")
-        };
-    }
+            email: email ?? previousState.email,
+            password: password ?? previousState.password,
+            device_token: device_token ?? "",
+        }
+        
+    }  
 
-    const [state, formAction, isPending] = useActionState(handleLoginAction, { email: "", password: "" })
+    const [state, formAction, isPending] = useActionState(handleLoginAction, { email: "", password: "",device_token: "" });
+    const [loginError, setLoginError] = useState<UserLoginType>({email: "", password: ""});
+    const [loginErrorMsg, setLoginErrorMsg] = useState<string>("");
+    
+
 
     return (
         <div className={cn("flex flex-col justify-center h-screen gap-6 sm-container m-auto font-lato", className)}>
@@ -52,9 +84,9 @@ export default function LoginForm({
                                     type="email"
                                     name="email"
                                     placeholder="m@example.com"
-                                    required
                                     defaultValue={state.email ? String(state.email) : ""}
                                 />
+                               <span className="error">{loginError.email}</span>
                             </div>
                             <div className="grid gap-3">
                                 <div className="flex items-center">
@@ -72,10 +104,13 @@ export default function LoginForm({
                                         type="password"
                                         name="password"
                                         defaultValue={state.password ? String(state.password) : ""}
-                                        required
                                     />
+
+                                    <span className="error">{loginError.password}</span>
                                 </div>
                             </div>
+                            
+                            <p>{ loginErrorMsg && <span className="error">{loginErrorMsg}</span> }</p>
 
                             <LoadingButton loading={isPending} />
 

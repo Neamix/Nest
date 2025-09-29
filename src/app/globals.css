@@ -134,6 +134,12 @@
   }
 }
 
+@layer validations {
+  .error {
+    @apply text-red-500 text-[12px];
+  }
+}
+
 
 @layer containers {
   .sm-container {
