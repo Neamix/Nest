@@ -77,10 +77,6 @@ export default function RegisterForm({
         if (!userData.success) {
             const { error }: UserAuthStateType = userData;
             setRegisterError({
-                first_name: formatErrorMessage(error?.first_name),
-                last_name: formatErrorMessage(error?.last_name),
-                password: formatErrorMessage(error?.password),
-                confirm_password: formatErrorMessage(error?.confirm_password),
                 email: formatErrorMessage(error?.email)
             });
            
@@ -110,7 +106,7 @@ export default function RegisterForm({
     }  
 
     const [state, formAction, isPending] = useActionState(handleRegisterAction, {first_name: "", last_name: "", email: "", password: "", confirm_password: "", device_token: "" });
-    const [registerError, setRegisterError] = useState<RegisterErrorType>({first_name: "", last_name: "", email: "", password: "", confirm_password: ""});
+    const [registerError, setRegisterError] = useState<Partial<RegisterErrorType>>({first_name: "", last_name: "", email: "", password: "", confirm_password: ""});
     const router = useRouter();
     const authStore = useAuthStore();
 
