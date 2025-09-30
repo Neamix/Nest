@@ -10,6 +10,7 @@ type ValidationRules = {
     maxLength?: number;
     greaterThanDate?: string | Date;
     email?: boolean;
+    match?: string;
     messages?: RuleMessages;
 };
 

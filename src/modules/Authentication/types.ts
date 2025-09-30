@@ -3,6 +3,14 @@ export interface UserLoginType {
     password?: string | null
 }
 
+export interface UserRegisterType extends UserLoginType {
+    first_name: string,
+    last_name: string,
+    phone?: string,
+    country_code?: string,
+    confirm_password: string | null,
+}
+
 
 export interface UserStateType extends UserLoginType {
     first_name: string;
@@ -26,4 +34,9 @@ export interface LoginCredentialsType {
     email: string,
     password: string,
     device_token: string,
+}
+
+export interface RegisterCredentialsType extends LoginCredentialsType {
+    first_name: string,
+    last_name?: string,
 }

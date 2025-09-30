@@ -23,9 +23,9 @@ const AlertDialog = ({trigger,title,children,cancel = false,}:{
         <DialogContent>
             <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>
+            <div className="mt-4 mb-6 text-sm">
               {children}
-            </DialogDescription>
+            </div>
             </DialogHeader>
         </DialogContent>
     </Dialog>
