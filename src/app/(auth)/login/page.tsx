@@ -1,6 +1,3 @@
-"use client"
-
-import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
 import TermsDialog from "@/components/blocks/Dialog/termsDialog"
@@ -9,18 +6,21 @@ import LoginForm from "@/components/blocks/form/LoginForm"
 
 export default function LoginPage() {
 
-
     return (
-        <div className="bg-muted">
-            <div className={cn("flex flex-col justify-center h-screen gap-6 sm-container m-auto font-lato ")}>
-
-                <Card className="overflow-hidden p-0">
-                    <CardContent className="grid p-0 md:grid-cols-2">
-                        
-                        <div className="">
+        <div className="bg-muted min-h-screen">
+            <div className="form-container flex justify-center">
+                <Card className="overflow-hidden p-0 mb-6">
+                    <CardContent className="grid p-0 md:grid-cols-2"> 
+                        <div className="inner-main-conainer">
                             <div className="flex flex-col items-start text-start px-6  pt-10">
                                 <div className="mb-4 flex items-center space-x-2">
-                                    <Image src="/branding/Nest.png" alt="Logo" width={148} height={45.67} />
+                                    <Image 
+                                        src="/branding/Nest.png" 
+                                        alt="Logo" 
+                                        width={148} 
+                                        height={45.67} 
+                                        priority
+                                    />
                                 </div>
                                 <h1 className="text-2xl font-bold">Sign in Nest Grocery</h1>
                                 <p className="text-muted-foreground text-[16px]">
@@ -34,7 +34,7 @@ export default function LoginPage() {
                         <div className="bg-muted relative hidden md:block bg-gradient-to-t from-neutral-900 to-neutral-500">
                             <Image
                                 src="/landscape/login.png"
-                                alt="Login illustration"
+                                alt="Nest Grocery Logo" 
                                 fill
                                 priority
                                 sizes="(max-width: 768px) 0px, 50vw"
@@ -57,7 +57,6 @@ export default function LoginPage() {
                     and {" "}
                     <PrivacyDialog/>
                 </div>
-
             </div>
         </div>
     )

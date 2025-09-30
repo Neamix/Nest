@@ -150,3 +150,9 @@
     max-width: 940px;
   }
 }
+
+@layer forms {
+  .form-container {
+    @apply flex flex-col justify-center h-screen gap-6 sm-container m-auto font-lato ;
+  }
+}
