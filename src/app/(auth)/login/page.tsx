@@ -7,10 +7,13 @@ import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import LoadingButton from "@/components/modified/loading-btn"
 import { useActionState, useState } from "react"
-import { UserLoginType } from "@/modules/Authentication/types";
+import { UserAuthStateType, UserLoginType } from "@/modules/Authentication/types";
 import { loginAction } from "@/modules/Authentication/Actions/LoginActions"
 import validateFields from "@/lib/validation"
 import InputPassword from "@/components/modified/input-password"
+import { useRouter } from "next/navigation"
+import { redirect } from "next/dist/server/api-utils"
+import useAuthStore from "@/modules/Authentication/Stores/store"
 
 export default function LoginForm({
     className,
@@ -47,11 +50,27 @@ export default function LoginForm({
         }
 
         // Call the login action
-        const userData:UserLoginType = await loginAction({email,password,device_token,fn:setLoginErrorMsg});
+        const userData:UserAuthStateType = await loginAction({email,password,device_token});
+        
+        // If login failed, set the error message
+        if (!userData.success) {
+            setLoginErrorMsg(userData.error || "Login failed. Please try again.");
+            return {
+                email: email ?? previousState.email,
+                device_token: device_token ?? "",
+            };
+        } 
+        
+        // On successful login, redirect to home page
+        if (userData.data && userData.success) {
+            authStore.setUser(userData.data);
+            router.push("/");
+        }
+
 
         return {
-            email: userData.email ?? previousState.email,
-            password: userData.password ?? previousState.password,
+            email: email ?? previousState.email,
+            password: password ?? previousState.password,
             device_token: device_token ?? "",
         }
         
@@ -60,15 +79,15 @@ export default function LoginForm({
     const [state, formAction, isPending] = useActionState(handleLoginAction, { email: "", password: "",device_token: "" });
     const [loginError, setLoginError] = useState<UserLoginType>({email: "", password: ""});
     const [loginErrorMsg, setLoginErrorMsg] = useState<string>("");
-    
-
+    const router = useRouter();
+    const authStore = useAuthStore();
 
     return (
         <div className={cn("flex flex-col justify-center h-screen gap-6 sm-container m-auto font-lato", className)}>
             <Card className="overflow-hidden p-0">
                 <CardContent className="grid p-0 md:grid-cols-2">
                     <form className="p-6 md:p-8" action={formAction}>
-                        <div className="flex flex-col gap-6">
+                        <div className="flex flex-col gap-2">
                             <div className="flex flex-col items-start text-start">
                                 <div className="mb-4 flex items-center space-x-2">
                                     <Image src="/branding/Nest.png" alt="Logo" width={148} height={45.67} />
@@ -109,10 +128,10 @@ export default function LoginForm({
                                     <span className="error">{loginError.password}</span>
                                 </div>
                             </div>
-                            <p>{ loginErrorMsg && <span className="error">{loginErrorMsg}</span> }</p>
-                            <p>{ loginError && <span className="error">{loginErrorMsg}</span> }</p>
 
-                            <LoadingButton loading={isPending} />
+                            <p>{ loginErrorMsg && <span className="error">{loginErrorMsg}</span> }</p>
+
+                            <LoadingButton className="mt-4" loading={isPending}  />
 
                             <div className="text-center text-sm">
                                 Don&apos;t have an account?{" "}

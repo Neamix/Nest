@@ -1,13 +1,17 @@
 "use client"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 export default function LoadingButton({
-    loading
+    loading,
+    className,
+    ...props
 }: {
-    loading?: boolean
+    loading?: boolean,
+    className?: string,
 }) {
     return (
-        <Button type="submit" className={"w-full font-semibold " + (loading ? "btn-inactive" : "")} disabled={loading} >
+        <Button type="submit" className={cn("w-full font-semibold btn", className, { "btn-inactive": loading })} disabled={loading} {...props}>
             Sign In Nest Grocery
         </Button>
     )

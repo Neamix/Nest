@@ -13,4 +13,17 @@ export interface UserStateType extends UserLoginType {
     joined_at: string;
     token: string;
     avatar: string | null;
+    setUser: (userData: Partial<UserStateType>) => void;
+}
+
+export interface UserAuthStateType {
+    success: boolean;
+    error?: string | null;
+    data?: UserStateType | null;
+}
+
+export interface LoginCredentialsType {
+    email: string,
+    password: string,
+    device_token: string,
 }
