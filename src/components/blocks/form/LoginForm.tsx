@@ -9,7 +9,6 @@ import { loginAction } from "@/modules/Authentication/Actions/LoginActions";
 import useAuthStore from "@/modules/Authentication/Stores/store";
 import { UserAuthStateType, UserLoginType } from "@/modules/Authentication/types";
 import { Label } from "@radix-ui/react-label"
-import Image from "next/image"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
@@ -35,15 +34,16 @@ export default function LoginForm({
 
         // Reset previous errors
         setLoginError({email: "", password: ""});
-
+        setLoginErrorMsg("");
+        
         // Validate fields; returns an object like { Email: string[], Password: string[] }
         const validationErrors = validateLoginForm(email, password);
 
         // If any field has errors, return the current values
         if (Object.keys(validationErrors).length > 0) {
             setLoginError({
-                email: validationErrors.Email?.[0],
-                password: validationErrors.Password?.[0]
+                email: validationErrors.Email?.[0] || "",
+                password: validationErrors.Password?.[0] || ""
             });
             return previousState;
         }
@@ -69,7 +69,7 @@ export default function LoginForm({
 
         return {
             email: email ?? previousState.email,
-            password: password ?? previousState.password,
+            password: "",
             device_token: device_token ?? "",
         }
         
@@ -92,28 +92,33 @@ export default function LoginForm({
                         type="email"
                         name="email"
                         placeholder="m@example.com"
+                        aria-describedby={loginError.email ? "email-error" : undefined}
+                        aria-invalid={!!loginError.email}
                         defaultValue={state.email ? String(state.email) : ""}
                     />
-                    <span className="error">{loginError.email}</span>
+
+                    {loginError.email && <span className="error">{loginError.email}</span>}
                 </div>
                 <div className="grid gap-3">
                     <div className="flex items-center">
                         <Label htmlFor="password">Password</Label>
-                        <a
+                        {/* <a
                             href="#"
                             className="ml-auto text-sm underline-offset-2 hover:underline"
                         >
                             Forgot your password?
-                        </a>
+                        </a> */}
                     </div>
                     <div className="relative w-full">
-                    <InputPassword
-                        id="password"
-                        name="password"
-                        defaultValue={state.password ? String(state.password) : ""}
+                        <InputPassword
+                            id="password"
+                            name="password"
+                            defaultValue=""
+                            aria-describedby={loginError.password ? "password-error" : undefined}
+                            aria-invalid={!!loginError.password}
                         />
 
-                        <span className="error">{loginError.password}</span>
+                        {loginError.password && <span className="error">{loginError.password}</span>}
                     </div>
                 </div>
 

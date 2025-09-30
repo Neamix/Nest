@@ -6,8 +6,11 @@ import PrivacyDialog from "@/components/blocks/Dialog/privacyDialog"
 import LoginForm from "@/components/blocks/form/LoginForm"
 
 export default function LoginPage() {
+    const containerClasses = "flex flex-col justify-center items-center min-h-screen gap-6 container mx-auto font-lato px-4 py-8";
+    const footerClasses = "text-muted-foreground text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary max-w-md";
+
     return (
-        <div className="bg-muted min-h-screen">
+        <div className={containerClasses}>
             <div className="flex justify-center items-center min-h-screen p-4">
                 <div className="w-full max-w-6xl">
                     <Card className="overflow-hidden p-0 mb-6">
@@ -51,7 +54,7 @@ export default function LoginPage() {
                         </CardContent>
                     </Card>
 
-                    <div className="text-muted-foreground text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary max-w-md mx-auto">
+                    <div className={footerClasses}>
                         By clicking continue, you agree to our{" "}
                         <TermsDialog /> and <PrivacyDialog />
                     </div>

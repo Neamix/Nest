@@ -11,6 +11,14 @@ export interface UserRegisterType extends UserLoginType {
     confirm_password: string | null,
 }
 
+export interface RegisterErrorType {
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+    password?: string;
+    confirm_password?: string;
+}
+
 
 export interface UserStateType extends UserLoginType {
     first_name: string;
@@ -26,7 +34,7 @@ export interface UserStateType extends UserLoginType {
 
 export interface UserAuthStateType {
     success: boolean;
-    error?: string | null;
+    error?: Record<string, string | string[]>| null;
     data?: UserStateType | null;
 }
 

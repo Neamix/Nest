@@ -1,5 +1,5 @@
 // Types for validation infrastructure
-type RuleName = 'required' | 'requiredIf' | 'minLength' | 'maxLength' | 'greaterThanDate' | 'email';
+type RuleName = 'required' | 'requiredIf' | 'minLength' | 'maxLength' | 'greaterThanDate' | 'email' | 'match';
 
 type RuleMessages = Partial<Record<RuleName, string>>;
 
@@ -10,7 +10,7 @@ type ValidationRules = {
     maxLength?: number;
     greaterThanDate?: string | Date;
     email?: boolean;
-    match?: string;
+    match?: string | null;
     messages?: RuleMessages;
 };
 
@@ -21,6 +21,7 @@ type ValidationField = {
     value: unknown;
     rules: ValidationRules;
     dependentField?: DependentField;
+    messages?: RuleMessages;
 };
 
 type ValidationResults = Record<string, string[]>;
@@ -28,7 +29,8 @@ type ValidationResults = Record<string, string[]>;
 export default function validateFields(fields: ValidationField[]): ValidationResults {
     const results: ValidationResults = {};
 
-    fields.forEach(({ name, value, rules, dependentField }) => {
+    fields.forEach(({ name, value, rules, dependentField, messages }) => {
+        console.log("Validating field:", name, value, rules, dependentField, messages);
         const errors: string[] = [];
 
         // Loop through the rules
@@ -103,7 +105,15 @@ export default function validateFields(fields: ValidationField[]): ValidationRes
                         }
                     }
                     break;
-
+                case 'match':
+                    if (ruleValue !== null && value !== ruleValue) {
+                        console.log("Match error:", messages);
+                        errors.push(
+                            messages?.match ||
+                            `${name} must match ${ruleValue}.`
+                        );
+                    }
+                    break;
                 default:
                     break;
             }

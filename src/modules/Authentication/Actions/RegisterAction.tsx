@@ -21,10 +21,10 @@ export const registerAction = async function ({ email,password,device_token,firs
         
         // Function to set error message in the calling component
         if (!response.status) {
-            console.log(response);
+            const {errors} = response.response;
             return {
                 success: false,
-                error: "Invalid credentials. Please check your email and password.",
+                error: errors || "Registration failed. Please try again.",
                 data: null
             };
         }

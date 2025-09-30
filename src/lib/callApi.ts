@@ -31,6 +31,7 @@ export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, me
     }
     
     // Make the API call
+    console.log("Calling API:", `${apiUrl}${endpoint}`, fetchOptions);
     const response = await fetch(`${apiUrl}${endpoint}`, fetchOptions);
     if (!response.ok) {
         return {
