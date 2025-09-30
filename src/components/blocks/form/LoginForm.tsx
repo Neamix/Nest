@@ -32,14 +32,11 @@ export default function LoginForm({
         const password:string = formData.get("password")?.toString() || "";
         const device_token:string = "test_token";
 
-        // Reset previous errors
         setLoginError({email: "", password: ""});
         setLoginErrorMsg("");
         
-        // Validate fields; returns an object like { Email: string[], Password: string[] }
         const validationErrors = validateLoginForm(email, password);
 
-        // If any field has errors, return the current values
         if (Object.keys(validationErrors).length > 0) {
             setLoginError({
                 email: validationErrors.Email?.[0] || "",
@@ -48,7 +45,6 @@ export default function LoginForm({
             return previousState;
         }
 
-        // Call the login action
         const userData:UserAuthStateType = await loginAction({email,password,device_token});
         
         // If login failed, set the error message
@@ -60,7 +56,6 @@ export default function LoginForm({
             };
         } 
         
-        // On successful login, redirect to home page
         if (userData.data && userData.success) {
             authStore.setUser(userData.data);
             router.push("/");

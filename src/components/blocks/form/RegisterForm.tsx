@@ -156,7 +156,7 @@ export default function RegisterForm({
                                 type="email"
                                 name="email"
                                 placeholder="John@example.com"
-                                defaultValue={state.email ? String(state.email) : ""}
+                                defaultValue={state.email ? state.email : ""}
                             />
                             <span className="error">{registerError.email}</span>
                         </div>
