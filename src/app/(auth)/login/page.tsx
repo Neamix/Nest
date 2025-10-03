@@ -4,11 +4,13 @@ import Image from "next/image"
 import TermsDialog from "@/components/blocks/Dialog/termsDialog"
 import PrivacyDialog from "@/components/blocks/Dialog/privacyDialog"
 import LoginForm from "@/components/blocks/form/LoginForm"
-
-export default function LoginPage() {
+import { headers } from "next/headers"
+export default async function LoginPage() {
     const containerClasses = "flex flex-col justify-center items-center min-h-screen gap-6 container mx-auto font-lato px-4 py-8";
     const footerClasses = "text-muted-foreground text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary max-w-md";
-
+    const headersList = await headers();
+    const user = headersList.get('x-user-data');
+    console.log("Login Page - User Data from Headers:", headersList.get('x-user-data'));
     return (
         <div className={containerClasses}>
             <div className="flex justify-center items-center min-h-screen p-4">
@@ -31,7 +33,7 @@ export default function LoginPage() {
                                         Find the best groceries and everyday essentials all in one place.
                                     </p>
                                 </div>
-                                
+                                {user}
                                 <LoginForm />
                             </div>
 

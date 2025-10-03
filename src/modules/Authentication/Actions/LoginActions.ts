@@ -37,6 +37,11 @@ export const loginAction = async function ({ email,password,device_token}:LoginC
             maxAge: 60 * 60 * 24 * 7 * 30 // 35 days
         });
 
+        // Update the auth store with user data
+        const headers = new Headers();
+        console.log("Login Action - Fetched User:", response.response.data.data);
+        headers.set('x-user-data', JSON.stringify(response.response.data.data));
+
         // On successful login, return user data
         return {
             success: true,

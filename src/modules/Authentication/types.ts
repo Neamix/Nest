@@ -34,7 +34,7 @@ export interface UserStateType extends UserLoginType {
 
 export interface UserAuthStateType {
     success: boolean;
-    error?: Record<string, string | string[]>| null;
+    error?: Record<string, string | string[]>| null | string;
     data?: UserStateType | null;
 }
 

@@ -12,13 +12,18 @@ export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, me
     }
 
     // Build fetch options based on store type'
+    let body: string | null = null;
+    if (method !== "GET") {
+        body = JSON.stringify(data);
+    }
+
     const fetchOptions : RequestInit = {
         method,
         headers: {
             "Content-Type": "application/json",
             ...headers,
         },
-        body: JSON.stringify(data),
+        body: body,
     };
 
     // Handle different store types
@@ -31,7 +36,6 @@ export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, me
     }
     
     // Make the API call
-    console.log("Calling API:", `${apiUrl}${endpoint}`, fetchOptions);
     const response = await fetch(`${apiUrl}${endpoint}`, fetchOptions);
     if (!response.ok) {
         return {
