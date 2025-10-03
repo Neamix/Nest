@@ -9,6 +9,7 @@ type UserState = {
 
 const useUserStore = create<UserState>((set, get) => ({
   user: {
+    id: "",
     first_name: "",
     last_name: "",
     phone: "",
