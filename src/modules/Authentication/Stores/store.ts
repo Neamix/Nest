@@ -2,9 +2,10 @@ import { create } from "zustand";
 import { UserType } from "../types";
 
 type UserState = {
-  user: UserType;
-  setUser: (user: Partial<UserType>) => void;
-  getUser: () => UserType;
+  user: UserType | null;
+  setUser: (user: UserType | null) => void;
+  clearUser: () => void;
+  getUser: () => UserType | null;
 };
 
 const useUserStore = create<UserState>((set, get) => ({
@@ -17,13 +18,12 @@ const useUserStore = create<UserState>((set, get) => ({
     email: "",
     email_verified_at: null,
     joined_at: "",
-    token: "",
     avatar: null,
   },
-  setUser: (newUser) => set((state) => ({
-    user: { ...state.user, ...newUser }
-  })),
+  setUser: (newUser: UserType | null) => set({ user: newUser }),
   getUser: () => get().user,
+  clearUser: () => set({ user: null }),
+
 }));
 
 export default useUserStore;

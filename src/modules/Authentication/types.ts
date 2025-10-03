@@ -58,6 +58,5 @@ export interface UserType {
     country_code: string;
     email_verified_at: string | null;
     joined_at: string;
-    token: string;
     avatar: string | null;
 }   

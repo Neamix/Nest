@@ -3,7 +3,7 @@
 import useAuthStore from "@/modules/Authentication/Stores/store";
 
 export default function PersonAvatar() {
-  const user = useAuthStore((state) => state.user);
+  const user = useAuthStore((store) => store.user);
   if (!user) return null;
     return (
        <>
