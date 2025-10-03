@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lato, Quicksand } from "next/font/google";
 import "./globals.css";
+import MeProvider from "@/Providers/MeProvider";
+import { meAction } from "@/modules/Authentication/Actions/MeAction";
+import { UserType } from "@/modules/Authentication/types";
 
 const quicksand = Quicksand({
   variable: "--font-quicksand",
@@ -19,18 +22,22 @@ export const metadata: Metadata = {
   description: "grocery delivery & more",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const authenticatedUser = await meAction();
+  const userData: UserType | null = authenticatedUser.data ?? null;
   return (
     <html lang="en">
-      <body
+      <body 
         className={`${lato.variable} ${quicksand.variable} antialiased font-main`}
       >
-        {children}
-      </body>
+        <MeProvider userData={userData}>
+          {children}
+        </MeProvider>
+      </body>   
     </html>
   );
 }

@@ -27,7 +27,6 @@ export default function RegisterForm({
         password,
         confirm_password
     }: UserRegisterType) => {
-        console.log(password, confirm_password);
         return validateFields([
             { 
                 name: "First name", 

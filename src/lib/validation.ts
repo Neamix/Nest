@@ -30,7 +30,6 @@ export default function validateFields(fields: ValidationField[]): ValidationRes
     const results: ValidationResults = {};
 
     fields.forEach(({ name, value, rules, dependentField, messages }) => {
-        console.log("Validating field:", name, value, rules, dependentField, messages);
         const errors: string[] = [];
 
         // Loop through the rules
@@ -107,7 +106,6 @@ export default function validateFields(fields: ValidationField[]): ValidationRes
                     break;
                 case 'match':
                     if (ruleValue !== null && value !== ruleValue) {
-                        console.log("Match error:", messages);
                         errors.push(
                             messages?.match ||
                             `${name} must match ${ruleValue}.`

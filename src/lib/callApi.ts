@@ -1,3 +1,4 @@
+import { ResponseType } from "@/modules/genericTypes";
 import { stat } from "fs";
 
 export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, method = "POST", data = {}}: 

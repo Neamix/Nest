@@ -1,7 +1,14 @@
 import { create } from "zustand";
-import { UserStateType } from "../types";
+import { UserType } from "../types";
 
-const useAuthStore = create<UserStateType>((set) => ({
+type UserState = {
+  user: UserType;
+  setUser: (user: Partial<UserType>) => void;
+  getUser: () => UserType;
+};
+
+const useUserStore = create<UserState>((set, get) => ({
+  user: {
     first_name: "",
     last_name: "",
     phone: "",
@@ -11,8 +18,11 @@ const useAuthStore = create<UserStateType>((set) => ({
     joined_at: "",
     token: "",
     avatar: null,
-    setUser: (userData: Partial<UserStateType>) => set((state) => ({ ...state, ...userData })),
-    getUser: () => set((state) => ({ ...state })),
+  },
+  setUser: (newUser) => set((state) => ({
+    user: { ...state.user, ...newUser }
+  })),
+  getUser: () => get().user,
 }));
 
-export default useAuthStore;
+export default useUserStore;

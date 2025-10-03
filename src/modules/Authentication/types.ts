@@ -29,13 +29,13 @@ export interface UserStateType extends UserLoginType {
     joined_at: string;
     token: string;
     avatar: string | null;
-    setUser: (userData: Partial<UserStateType>) => void;
+    setUser: (userData: Partial<UserType>) => void;
 }
 
 export interface UserAuthStateType {
     success: boolean;
     error?: Record<string, string | string[]>| null | string;
-    data?: UserStateType | null;
+    data?: UserType | null;
 }
 
 export interface LoginCredentialsType {
@@ -48,3 +48,15 @@ export interface RegisterCredentialsType extends LoginCredentialsType {
     first_name: string,
     last_name?: string,
 }
+
+export interface UserType {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: string;
+    country_code: string;
+    email_verified_at: string | null;
+    joined_at: string;
+    token: string;
+    avatar: string | null;
+}   

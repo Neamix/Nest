@@ -10,7 +10,6 @@ export default async function LoginPage() {
     const footerClasses = "text-muted-foreground text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary max-w-md";
     const headersList = await headers();
     const user = headersList.get('x-user-data');
-    console.log("Login Page - User Data from Headers:", headersList.get('x-user-data'));
     return (
         <div className={containerClasses}>
             <div className="flex justify-center items-center min-h-screen p-4">
