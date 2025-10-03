@@ -19,13 +19,15 @@ export default function LoginForm({
 }: { 
     className?: string
 }) {
+    const [loginErrorMsg, setLoginErrorMsg] = useState<Record<string, string>>({});
+    const router = useRouter();
 
     // Action handler for form submission
     const handleLoginAction = async (previousState: UserLoginType, formData: FormData): Promise<UserLoginType> => {
         // reset errors
         setLoginErrorMsg({});
         const { email, password } = Object.fromEntries(formData.entries());
-        const device_token = typeof navigator !== "undefined" ? navigator.userAgent : "server";
+        const device_token = formData.get("device_token")?.toString() || "test_device_token";
 
         // Validate user data 
         const userDataValidation = LoginSchema.safeParse({ email, password, device_token });
@@ -35,17 +37,25 @@ export default function LoginForm({
                 email: tree.properties?.email?.errors?.[0] || "",
                 password: tree.properties?.password?.errors?.[0] || "",
             });
-            return { ...previousState };
+            return { email: email as string , device_token: device_token as string };
         }
 
 
         // Login action call
         const response = await LoginAction({ email: email as string, password: password as string, device_token });
         if (response?.error) {
-            setLoginErrorMsg(Object.fromEntries(
-                Object.entries(response.error).map(([key, value]) => [key, value?.toString() || ""])
-            ));
-            return { ...previousState };
+
+            if (response.error === "invalid_credentials") {
+                setLoginErrorMsg({
+                    email: "Invalid credentials. Please check your email and password.",
+                });
+            } else if (typeof response.error === "object") {
+                setLoginErrorMsg(Object.fromEntries(
+                    Object.entries(response.error).map(([key, value]) => [key, value?.toString() || ""])
+                ));
+            }
+
+            return { email: email as string , device_token: device_token as string };
         }
 
         // Save data to store
@@ -55,19 +65,18 @@ export default function LoginForm({
             router.push("/");
         }
             
-        return { ...previousState };
+        return { email: email as string , device_token: device_token as string };
     }
 
     const [state, formAction, isPending] = useActionState(handleLoginAction, { email: "", password: "",device_token: "" });
-    const [loginErrorMsg, setLoginErrorMsg] = useState<Record<string, string>>({});
-    const router = useRouter();
+
 
     return (
         <form className={cn("p-6 md:p-8",className)} action={formAction}>
             <div className="flex flex-col gap-2">
                 
-                <div className="grid gap-3">
-                    <Label htmlFor="email">Email {state.email}</Label>
+                <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
                     <Input 
                         id="email"
                         type="email"
@@ -80,10 +89,10 @@ export default function LoginForm({
                     />
 
                     {loginErrorMsg?.email && (
-                        <p id="email-error" className="text-sm text-red-500">{loginErrorMsg.email}</p>
+                        <p id="email-error" className="text-sm text-red-500 error">{loginErrorMsg.email}</p>
                     )}
                 </div>
-                <div className="grid gap-3">
+                <div className="grid gap-2">
                     <div className="flex items-center">
                         <Label htmlFor="password">Password</Label>
                         {/* <a
@@ -102,7 +111,7 @@ export default function LoginForm({
                             onChange={() => loginErrorMsg?.password && setLoginErrorMsg(prev => ({ ...prev, password: "" }))}
                         />
                         {loginErrorMsg?.password && (
-                            <p id="password-error" className="text-sm text-red-500">{loginErrorMsg.password}</p>
+                            <p id="password-error" className="text-sm text-red-500 error">{loginErrorMsg.password}</p>
                         )}
                     </div>
                 </div>

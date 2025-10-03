@@ -7,114 +7,79 @@ import formatErrorMessage from "@/lib/formateErrorMessage";
 import { cn } from "@/lib/utils";
 import validateFields from "@/lib/validation";
 import { registerAction } from "@/modules/Authentication/Actions/RegisterAction";
+import { RegisterSchema } from "@/modules/Authentication/Schema/RegisterSchema";
 import useAuthStore from "@/modules/Authentication/Stores/store";
 import { RegisterErrorType, UserAuthStateType, UserRegisterType } from "@/modules/Authentication/types";
 import { Label } from "@radix-ui/react-label"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
+import z from "zod";
 
 export default function RegisterForm({
     className,
 }: { 
     className?: string
 }) {
-    // Validate the form fields
-    const validateRegisterForm = ({
-        first_name,
-        last_name,
-        email,
-        password,
-        confirm_password
-    }: UserRegisterType) => {
-        return validateFields([
-            { 
-                name: "First name", 
-                value: first_name, 
-                rules: { required: true },
-                messages: { required: "First name is required." }
-            },
-            { name: "Last name", value: last_name, rules: { required: false } },
-            { name: "Email", value: email, rules: { required: true, email: true } },
-            { name: "Password", value: password, rules: { required: true } },
-            { name: "Confirm password", value: confirm_password, rules: { required: true, match: password },messages: { match: "Passwords do not match." } }
-        ]);
-    };
+    const [registerErrorMsg, setRegisterErrorMsg] = useState<Record<string, string>>({});
+    const router = useRouter();
+    const authStore = useAuthStore();
 
     // Action handler for form submission
     const handleRegisterAction = async (previousState: UserRegisterType, formData: FormData) => {
-        const first_name: string = formData.get("first_name")?.toString() || "";
-        const last_name: string = formData.get("last_name")?.toString() || "";
-        const email: string = formData.get("email")?.toString() || "";
-        const password: string = formData.get("password")?.toString() || "";
-        const confirm_password: string = formData.get("confirm_password")?.toString() || "";
-        const device_token: string = "test_token";
+        const { first_name, last_name, email, password, confirm_password } = Object.fromEntries(formData.entries());
+        const device_token = formData.get("device_token")?.toString() || "";
 
-        setRegisterError({first_name: "", last_name: "", email: "", password: "", confirm_password: ""});
-        const validationErrors = validateRegisterForm({first_name, last_name, email, password, confirm_password});
+        // Validate user data
+        setRegisterErrorMsg({});
+        const validationErrors = RegisterSchema.safeParse({ first_name, last_name, email, password,confirm_password });
 
-        if (Object.keys(validationErrors).length > 0) {
-            setRegisterError({
-                first_name: validationErrors["First name"]?.[0] || "",
-                last_name: validationErrors["Last name"]?.[0] || "",
-                email: validationErrors["Email"]?.[0] || "",
-                password: validationErrors["Password"]?.[0] || "",
-                confirm_password: validationErrors["Confirm password"]?.[0] || "",
+        if (!validationErrors.success) {
+            const tree = z.treeifyError(validationErrors.error);
+            setRegisterErrorMsg({
+                first_name: tree.properties?.first_name?.errors?.[0] || "",
+                last_name: tree.properties?.last_name?.errors?.[0] || "",
+                email: tree.properties?.email?.errors?.[0] || "",
+                password: tree.properties?.password?.errors?.[0] || "",
+                confirm_password: tree.properties?.confirm_password?.errors?.[0] || "",
             });
 
-            return {
-                first_name: first_name ?? previousState.first_name,
-                last_name: last_name ?? previousState.last_name,
-                email: email ?? previousState.email,
-                password: "",
-                confirm_password: "",
-                device_token: device_token ?? "",
+            return { 
+                first_name,
+                last_name,
+                email,
+                password,
+                confirm_password,
             };
         }
 
-        const userData:UserAuthStateType = await registerAction({email,password,device_token,first_name,last_name});
-        if (!userData.success) {
-            const { error }: UserAuthStateType = userData;
-            setRegisterError({
-                email: formatErrorMessage(error?.email)
-            });
-           
-            return {
-                first_name: first_name ?? previousState.first_name,
-                last_name: last_name ?? previousState.last_name,
-                email: email ?? previousState.email,
-                password: "",
-                confirm_password: "",
-                device_token: device_token ?? "",
-            };
-        } else if (userData.data && userData.success) {
-            authStore.setUser(userData.data);
+        // Register action call
+        const response = await registerAction({ first_name: first_name as string, last_name: last_name as string, email: email as string, password: password as string, device_token });
+        if (response?.error) {
+            setRegisterErrorMsg(Object.fromEntries(
+                Object.entries(response.error).map(([key, value]) => [key, value?.toString() || ""])
+            ));
+            return { ...previousState};
+        }
+
+        // Save data to store
+        if (response?.data) {
+            setRegisterErrorMsg({});
+            authStore.setUser(response.data);
             router.push("/");
         }
 
-
-        return {
-            first_name: previousState.first_name,
-            last_name: previousState.last_name,
-            email: email ?? previousState.email,
-            password: "",
-            confirm_password: "",
-            device_token: device_token ?? "",
-        }
-        
+        return { ...previousState};
     }  
 
     const [state, formAction, isPending] = useActionState(handleRegisterAction, {first_name: "", last_name: "", email: "", password: "", confirm_password: "", device_token: "" });
-    const [registerError, setRegisterError] = useState<Partial<RegisterErrorType>>({first_name: "", last_name: "", email: "", password: "", confirm_password: ""});
-    const router = useRouter();
-    const authStore = useAuthStore();
 
     return (
         <form className={cn("p-6 md:p-8",className)} action={formAction}>
 
            <div className="flex flex-col gap-5">
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
 
                     <div className="grid  gap-x-3 gap-y-1 relative">
                         <Label htmlFor="first_name">First Name</Label>
@@ -123,7 +88,7 @@ export default function RegisterForm({
                             type="text"
                             name="first_name"
                             placeholder="John"
-                            defaultValue={state.first_name ? state.first_name: ""}
+                            onChange={() => registerErrorMsg?.first_name && setRegisterErrorMsg(prev => ({...prev, first_name: "" }))}
                         />
                     </div>
 
@@ -134,15 +99,17 @@ export default function RegisterForm({
                             type="text"
                             name="last_name"
                             placeholder="Doe"
-                            defaultValue={state.last_name ? state.last_name : ""}
+                            defaultValue={state.last_name}
+                            onChange={() => registerErrorMsg?.last_name && setRegisterErrorMsg(prev => ({...prev, last_name: "" }))}
                         />
                     </div>
-                    
-                    <span className="error">{registerError.first_name}</span>
-                    <span className="error">{registerError.last_name}</span>
+
+                    <p id="first_name-error" className="text-sm text-red-500 error">{registerErrorMsg?.first_name}</p>
+                    <p id="last_name-error" className="text-sm text-red-500 error">{registerErrorMsg?.last_name}</p>
+
                 </div>
 
-                <div className="grid gap-3 relative">
+                <div className="grid gap-2 relative">
 
                         <div className="grid  gap-x-3 gap-y-1 relative">
                             <Label htmlFor="email">Email</Label>
@@ -151,9 +118,12 @@ export default function RegisterForm({
                                 type="email"
                                 name="email"
                                 placeholder="John@example.com"
-                                defaultValue={state.email ? state.email : ""}
+                                defaultValue={state.email}
+                                onChange={() => registerErrorMsg?.email && setRegisterErrorMsg(prev => ({...prev, email: "" }))}
                             />
-                            <span className="error">{registerError.email}</span>
+                            {registerErrorMsg?.email && (
+                                <p id="email-error" className="text-sm text-red-500 error">{registerErrorMsg.email}</p>
+                            )}
                         </div>
 
                 </div>
@@ -166,6 +136,7 @@ export default function RegisterForm({
                             id="password"
                             name="password"
                             defaultValue=""
+                            onChange={() => registerErrorMsg?.password && setRegisterErrorMsg(prev => ({...prev, password: "" }))}
                         />
                         
                     </div>
@@ -176,11 +147,17 @@ export default function RegisterForm({
                             id="confirm_password"
                             name="confirm_password"
                             defaultValue=""
+                            onChange={() => registerErrorMsg?.confirm_password && setRegisterErrorMsg(prev => ({...prev, confirm_password: "" }))}
                         />
                     </div>
 
-                    <span className="error block">{registerError.password}</span>
-                    <span className="error block">{registerError.confirm_password}</span>
+                    {registerErrorMsg?.password && (
+                        <p id="password-error" className="text-sm text-red-500 error">{registerErrorMsg.password}</p>
+                    )}
+
+                    {registerErrorMsg?.confirm_password && (
+                        <p id="confirm_password-error" className="text-sm text-red-500 error">{registerErrorMsg.confirm_password}</p>
+                    )}
 
                 </div>
 

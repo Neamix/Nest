@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import RegisterForm from "@/components/blocks/form/RegisterForm"
 
 export default function RegisterPage() {
-  const containerClasses = "flex flex-col justify-center items-center min-h-screen gap-6 container mx-auto font-lato px-4 py-8";
+  const containerClasses = "flex flex-col justify-center items-center min-h-screen gap-6 container mx-auto font-lato px-4";
   const footerClasses = "text-muted-foreground text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary max-w-md";
 
   return (

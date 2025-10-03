@@ -3,7 +3,6 @@
 import { callApi } from "@/lib/callApi";
 import { cookies } from "next/headers";
 import { LoginCredentialsType, UserAuthStateType } from "../types";
-import useAuthStore from "../Stores/store";
 
 export const LoginAction = async function ({ email,password,device_token}:LoginCredentialsType):Promise<UserAuthStateType> {
     try {
@@ -17,12 +16,12 @@ export const LoginAction = async function ({ email,password,device_token}:LoginC
                 device_token
             }
         });
-        
+
         // Function to set error message in the calling component
         if (!response.status) {
             return {
                 success: false,
-                error: "Invalid credentials. Please check your email and password.",
+                error: "invalid_credentials",
                 data: null
             };
         }
