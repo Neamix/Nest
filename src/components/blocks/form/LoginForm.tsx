@@ -4,95 +4,84 @@ import InputPassword from "@/components/modified/input-password";
 import LoadingButton from "@/components/modified/loading-btn";
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils";
-import validateFields from "@/lib/validation";
-import { loginAction } from "@/modules/Authentication/Actions/LoginActions";
+import { LoginAction } from "@/modules/Authentication/Actions/LoginActions";
+import { LoginSchema } from "@/modules/Authentication/Schema/LoginSchema";
 import useAuthStore from "@/modules/Authentication/Stores/store";
-import { UserAuthStateType, UserLoginType } from "@/modules/Authentication/types";
+import { UserLoginType } from "@/modules/Authentication/types";
 import { Label } from "@radix-ui/react-label"
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useActionState, useState } from "react";
+import z from "zod";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm({
     className,
 }: { 
     className?: string
 }) {
-    // Validate the form fields
-    const validateLoginForm = (email: string, password: string) => {
-        return validateFields([
-            { name: "Email", value: email, rules: { required: true, email: true } },
-            { name: "Password", value: password, rules: { required: true } }
-        ]);
-    };
 
     // Action handler for form submission
-    const handleLoginAction = async (previousState: UserLoginType, formData: FormData) => {
-        const email:string = formData.get("email")?.toString() || "";
-        const password:string = formData.get("password")?.toString() || "";
-        const device_token:string = "test_token";
+    const handleLoginAction = async (previousState: UserLoginType, formData: FormData): Promise<UserLoginType> => {
+        // reset errors
+        setLoginErrorMsg({});
+        const { email, password } = Object.fromEntries(formData.entries());
+        const device_token = typeof navigator !== "undefined" ? navigator.userAgent : "server";
 
-        setLoginError({email: "", password: ""});
-        setLoginErrorMsg("");
-        
-        const validationErrors = validateLoginForm(email, password);
-
-        if (Object.keys(validationErrors).length > 0) {
-            setLoginError({
-                email: validationErrors.Email?.[0] || "",
-                password: validationErrors.Password?.[0] || ""
+        // Validate user data 
+        const userDataValidation = LoginSchema.safeParse({ email, password, device_token });
+        if (!userDataValidation.success) {
+            const tree = z.treeifyError(userDataValidation.error);
+            setLoginErrorMsg({
+                email: tree.properties?.email?.errors?.[0] || "",
+                password: tree.properties?.password?.errors?.[0] || "",
             });
-            return previousState;
+            return { ...previousState };
         }
 
-        const userData:UserAuthStateType = await loginAction({email,password,device_token});
-        
-        // If login failed, set the error message
-        if (!userData.success) {
-            setLoginErrorMsg(userData.error || "Login failed. Please try again.");
-            return {
-                email: email ?? previousState.email,
-                device_token: device_token ?? "",
-            };
-        } 
-        
-        if (userData.data && userData.success) {
-            authStore.setUser(userData.data);
+
+        // Login action call
+        const response = await LoginAction({ email: email as string, password: password as string, device_token });
+        if (response?.error) {
+            setLoginErrorMsg(Object.fromEntries(
+                Object.entries(response.error).map(([key, value]) => [key, value?.toString() || ""])
+            ));
+            return { ...previousState };
+        }
+
+        // Save data to store
+        if (response?.data) {
+            setLoginErrorMsg({});
+            useAuthStore.getState().setUser(response.data);
             router.push("/");
         }
-
-
-        return {
-            email: email ?? previousState.email,
-            password: "",
-            device_token: device_token ?? "",
-        }
-        
-    }  
+            
+        return { ...previousState };
+    }
 
     const [state, formAction, isPending] = useActionState(handleLoginAction, { email: "", password: "",device_token: "" });
-    const [loginError, setLoginError] = useState<UserLoginType>({email: "", password: ""});
-    const [loginErrorMsg, setLoginErrorMsg] = useState<string>("");
+    const [loginErrorMsg, setLoginErrorMsg] = useState<Record<string, string>>({});
     const router = useRouter();
-    const authStore = useAuthStore();
 
     return (
         <form className={cn("p-6 md:p-8",className)} action={formAction}>
             <div className="flex flex-col gap-2">
                 
                 <div className="grid gap-3">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
+                    <Label htmlFor="email">Email {state.email}</Label>
+                    <Input 
                         id="email"
                         type="email"
                         name="email"
                         placeholder="m@example.com"
-                        aria-describedby={loginError.email ? "email-error" : undefined}
-                        aria-invalid={!!loginError.email}
-                        defaultValue={state.email ? String(state.email) : ""}
+                        defaultValue={state.email}
+                        aria-describedby={loginErrorMsg?.email ? "email-error" : undefined}
+                        aria-invalid={!!loginErrorMsg?.email}
+                        onChange={() => loginErrorMsg?.email && setLoginErrorMsg(prev => ({ ...prev, email: "" }))}
                     />
 
-                    {loginError.email && <span className="error">{loginError.email}</span>}
+                    {loginErrorMsg?.email && (
+                        <p id="email-error" className="text-sm text-red-500">{loginErrorMsg.email}</p>
+                    )}
                 </div>
                 <div className="grid gap-3">
                     <div className="flex items-center">
@@ -108,16 +97,15 @@ export default function LoginForm({
                         <InputPassword
                             id="password"
                             name="password"
-                            defaultValue=""
-                            aria-describedby={loginError.password ? "password-error" : undefined}
-                            aria-invalid={!!loginError.password}
+                            aria-describedby={loginErrorMsg?.password ? "password-error" : undefined}
+                            aria-invalid={!!loginErrorMsg?.password}
+                            onChange={() => loginErrorMsg?.password && setLoginErrorMsg(prev => ({ ...prev, password: "" }))}
                         />
-
-                        {loginError.password && <span className="error">{loginError.password}</span>}
+                        {loginErrorMsg?.password && (
+                            <p id="password-error" className="text-sm text-red-500">{loginErrorMsg.password}</p>
+                        )}
                     </div>
                 </div>
-
-                <p>{ loginErrorMsg && <span className="error">{loginErrorMsg}</span> }</p>
 
                 <LoadingButton className="mt-4" loading={isPending}  >
                     Sign In Nest Grocery

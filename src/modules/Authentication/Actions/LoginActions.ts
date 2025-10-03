@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { LoginCredentialsType, UserAuthStateType } from "../types";
 import useAuthStore from "../Stores/store";
 
-export const loginAction = async function ({ email,password,device_token}:LoginCredentialsType):Promise<UserAuthStateType> {
+export const LoginAction = async function ({ email,password,device_token}:LoginCredentialsType):Promise<UserAuthStateType> {
     try {
         // Call the login API
         const response = await callApi({

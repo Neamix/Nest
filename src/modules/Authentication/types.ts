@@ -1,6 +1,7 @@
 export interface UserLoginType {
     email: string,
-    password?: string | null
+    password?: string | null,
+    device_token: string,
 }
 
 export interface UserRegisterType extends UserLoginType {
