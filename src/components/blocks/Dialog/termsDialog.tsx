@@ -1,4 +1,4 @@
-﻿import AlertDialog from "@/components/modified/dialog";
+﻿import AlertDialog from "@/components/reactive-components/dialog";
 
 export default function TermsDialog() {
     return (

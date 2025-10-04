@@ -1,7 +1,7 @@
 "use client"
 
-import InputPassword from "@/components/modified/input-password";
-import LoadingButton from "@/components/modified/loading-btn";
+import InputPassword from "@/components/reactive-components/input-password";
+import LoadingButton from "@/components/reactive-components/loading-btn";
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils";
 import { LoginAction } from "@/modules/Authentication/Actions/LoginActions";
@@ -116,7 +116,7 @@ export default function LoginForm({
                     </div>
                 </div>
 
-                <LoadingButton className="mt-4" loading={isPending}  >
+                <LoadingButton className="mt-4" loading={!isPending}  >
                     Sign In Nest Grocery
                 </LoadingButton>
 

@@ -151,6 +151,16 @@
   }
 }
 
+@layer spinners {
+  .spinner-border {
+    @apply border-2 border-b-transparent border-neutral-500 rounded-full w-4 h-4 flex justify-center items-center animate-spin;
+  }
+
+  .inner-spin {
+    @apply border-2 border-transparent border-b-neutral-500  w-[10px] h-4 block rounded-full
+  }
+}
+
 @layer forms {
   .form-container {
     @apply flex flex-col justify-center h-screen gap-6  m-auto font-lato ;

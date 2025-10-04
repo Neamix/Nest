@@ -14,6 +14,12 @@ export default function LoadingButton({
 }) {
     return (
         <Button type="submit" className={cn("w-full font-semibold btn", className, { "btn-inactive": loading })} disabled={loading} {...props}>
+            {loading && (
+                <div className="spinner-border">
+                    <div className="inner-spin"></div>
+                </div>
+            )}
+
             {children}
         </Button>
     )

@@ -1,7 +1,7 @@
 "use client"
 
-import InputPassword from "@/components/modified/input-password";
-import LoadingButton from "@/components/modified/loading-btn";
+import InputPassword from "@/components/reactive-components/input-password";
+import LoadingButton from "@/components/reactive-components/loading-btn";
 import { Input } from "@/components/ui/input"
 import formatErrorMessage from "@/lib/formateErrorMessage";
 import { cn } from "@/lib/utils";
