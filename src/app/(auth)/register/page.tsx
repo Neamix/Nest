@@ -11,7 +11,7 @@ export default function RegisterPage() {
 
   return (
     <div className="bg-muted min-h-screen">
-      <div className={cn(containerClasses)}>
+      <div className={containerClasses}>
         <Card className="overflow-hidden p-0 max-w-[700px] w-full">
           <CardContent className="p-0">
             <div className="px-6 pt-10">
