@@ -10,35 +10,26 @@ export default function RegisterPage() {
   const footerClasses = "text-muted-foreground text-center text-xs text-balance [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:text-primary max-w-md";
 
   return (
-    <div className="bg-muted min-h-screen">
-      <div className={containerClasses}>
-        <Card className="overflow-hidden p-0 max-w-[700px] w-full">
-          <CardContent className="p-0">
-            <div className="px-6 pt-10">
-              <div className="mb-4 flex items-center space-x-2">
-                <Image 
-                  src="/branding/Nest.png" 
-                  alt="Nest Grocery Logo" 
-                  width={148} 
-                  height={45.67}
-                  priority
-                />
-              </div>
-              <h1 className="text-2xl font-bold mb-2">Sign Up Nest Grocery</h1>
-              <p className="text-muted-foreground text-base mb-6">
-                Find the best groceries and everyday essentials all in one place.
-              </p>
-            </div>
-            
-            <RegisterForm />
-          </CardContent>
-        </Card>
-
-        <div className={footerClasses}>
-          By clicking sign up, you agree to our{" "}
-          <TermsDialog /> and <PrivacyDialog />
+    <Card className="overflow-hidden p-0 max-w-[700px] w-full">
+      <CardContent className="p-0">
+        <div className="px-6 pt-10">
+          <div className="mb-4 flex items-center space-x-2">
+            <Image 
+              src="/branding/Nest.png" 
+              alt="Nest Grocery Logo" 
+              width={148} 
+              height={45.67}
+              priority
+            />
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Sign Up Nest Grocery</h1>
+          <p className="text-muted-foreground text-base mb-6">
+            Find the best groceries and everyday essentials all in one place.
+          </p>
         </div>
-      </div>
-    </div>
+        
+        <RegisterForm />
+      </CardContent>
+    </Card>
   )
 }

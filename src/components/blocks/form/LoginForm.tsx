@@ -116,7 +116,7 @@ export default function LoginForm({
                     </div>
                 </div>
 
-                <LoadingButton className="mt-4" loading={!isPending}  >
+                <LoadingButton className="mt-4" loading={isPending}  >
                     Sign In Nest Grocery
                 </LoadingButton>
 
