@@ -30,7 +30,13 @@ export type RegisterCredentialsType  = {
     device_token?: string,
 }
 
-export type UserLoginType = Pick<UserType, 'email' | 'password' | 'device_token'>;
+export type LoginActionResult = {
+    success: boolean;
+    error: Record<string, string> | null;
+    data: UserAuthStateType | null;
+};
+
+export type UserLoginType = Pick<UserType, 'email' | 'password'>;
 export type UserRegisterType = Pick<UserType, 'first_name' | 'last_name' | 'email' | 'phone' | 'country_code'> & { confirm_password: string | null };
 export type UserStateType = UserType & { setUser: (userData: Partial<UserType>) => void; };
 export type ForgetPasswordType = Pick<UserType, 'email'>;

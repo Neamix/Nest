@@ -2,9 +2,9 @@
 
 import { callApi } from "@/lib/callApi";
 import { cookies } from "next/headers";
-import { LoginCredentialsType, UserAuthStateType } from "../types";
+import { UserLoginType,LoginActionResult } from "../types";
 
-export const LoginAction = async function ({ email,password,device_token}:LoginCredentialsType):Promise<UserAuthStateType> {
+export const LoginAction = async function ({ email,password}: UserLoginType): Promise<LoginActionResult> {
     try {
         // Call the login API
         const response = await callApi({
@@ -13,7 +13,6 @@ export const LoginAction = async function ({ email,password,device_token}:LoginC
             data: {
                 email,
                 password,
-                device_token
             }
         });
 
@@ -21,7 +20,7 @@ export const LoginAction = async function ({ email,password,device_token}:LoginC
         if (!response.status) {
             return {
                 success: false,
-                error: "invalid_credentials",
+                error: {email: "Invalid credentials. Please try again."},
                 data: null
             };
         }

@@ -10,6 +10,8 @@ import { RegisterSchema } from "@/modules/Authentication/Schema/RegisterSchema"
 import { RegisterCredentialsType } from "@/modules/Authentication/types"
 import { useRouter } from "next/navigation"
 import { useActionState, useState } from "react"
+import Link from "next/link"
+import { Label } from "@/components/ui/label"
 
 export default function RegisterForm({
     className,
@@ -19,7 +21,7 @@ export default function RegisterForm({
     async function handlerRegisterAction(prevState:RegisterCredentialsType,formData: FormData): Promise<RegisterCredentialsType> {
         // Reset errors
         setErrorMessages({});
-        
+
         // Handle form validation
         const [errorsReturn,isValid] = zodValidateHandler(formData,RegisterSchema);
         if (!isValid) {
@@ -66,7 +68,7 @@ export default function RegisterForm({
             <div className="grid gap-6">
                 <fieldset className="grid grid-cols-2 gap-2">
                     <div>
-                        <label className="sr-only" htmlFor="first_name">First name</label>
+                        <Label className="mb-2 text-[13px]" htmlFor="first_name">First name</Label>
                         <Input
                             id="first_name"
                             name="first_name"
@@ -79,7 +81,7 @@ export default function RegisterForm({
                     </div>
 
                     <div>
-                        <label className="sr-only" htmlFor="last_name">Last name</label>
+                        <Label className="mb-2 text-[13px]" htmlFor="last_name">Last name</Label>
                         <Input
                             id="last_name"
                             name="last_name"
@@ -98,7 +100,7 @@ export default function RegisterForm({
                 </fieldset>
 
                 <fieldset className="grid grid-cols-1 gap-2">
-                    <label className="sr-only" htmlFor="email">Email</label>
+                    <Label className="mb-2 text-[13px]" htmlFor="email">Email</Label>
                     <Input
                         id="email"
                         name="email"
@@ -116,19 +118,19 @@ export default function RegisterForm({
 
                 <fieldset className="grid grid-cols-2 gap-2">
                     <div>
-                        <label className="sr-only" htmlFor="password">Password</label>
+                        <Label className="mb-2 text-[13px]" htmlFor="password">Password</Label>
                         <InputPassword
                             id="password"
                             name="password"
                             placeholder="Password"
-                            className="w-full"
+                            className="mb-2 text-[13px]"
                             aria-invalid={!!errorMessages?.password}
                             defaultValue= ""
                         />
                     </div>
 
                     <div>
-                        <label className="sr-only" htmlFor="confirm_password">Confirm password</label>
+                        <Label className="mb-2 text-[13px]" htmlFor="confirm_password">Confirm password</Label>
                         <InputPassword
                             id="confirm_password"
                             name="confirm_password"
@@ -144,8 +146,15 @@ export default function RegisterForm({
 
                 </fieldset>
 
-                <div className="flex justify-end">
-                   <LoadingButton className="mt-4" loading={isPending}  >
+                <div className="flex flex-col justify-end">
+                    <fieldset className="grid grid-cols-1 gap-2 mx-1">
+                        <p className="text-[14px] flex gap-1.5">
+                            <span>Already have an account? </span>
+                            <Link href="/login" className=" text-primary hover:underline transition transition-all">Sign in</Link>
+                        </p>
+                    </fieldset>
+
+                    <LoadingButton className="mt-2" loading={isPending}  >
                         Sign Up Nest Grocery
                     </LoadingButton>
                 </div>
