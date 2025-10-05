@@ -23,7 +23,7 @@ export default function RegisterPage() {
             />
           </div>
           <h1 className="text-2xl font-bold mb-2">Sign Up Nest Grocery</h1>
-          <p className="text-muted-foreground text-base mb-6">
+          <p className="text-muted-foreground text-base">
             Find the best groceries and everyday essentials all in one place.
           </p>
         </div>

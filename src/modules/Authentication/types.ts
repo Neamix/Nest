@@ -25,15 +25,13 @@ export type RegisterCredentialsType  = {
     first_name: string,
     last_name: string,
     email: string,
-    password?: string,
-    confirm_password?: string,
+    password: string,
+    confirm_password: string,
     device_token?: string,
 }
 
-export type RegisterFormState = Omit<RegisterCredentialsType, 'password' | 'confirm_password'>;
 export type UserLoginType = Pick<UserType, 'email' | 'password' | 'device_token'>;
 export type UserRegisterType = Pick<UserType, 'first_name' | 'last_name' | 'email' | 'phone' | 'country_code'> & { confirm_password: string | null };
-export type RegisterErrorType = Partial<UserRegisterType>;
 export type UserStateType = UserType & { setUser: (userData: Partial<UserType>) => void; };
 export type ForgetPasswordType = Pick<UserType, 'email'>;
 

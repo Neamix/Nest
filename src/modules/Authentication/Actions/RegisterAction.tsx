@@ -20,6 +20,7 @@ export const registerAction = async function ({ email,password,device_token,firs
         });
         
         // Function to set error message in the calling component
+        console.log(response)
         if (!response.status) {
             const {errors} = response.response;
             return {

@@ -140,7 +140,7 @@
 
 @layer validations {
   .error {
-    @apply text-red-500 !text-[11px];
+    @apply text-red-500 !text-[13px];
   }
 }
 
