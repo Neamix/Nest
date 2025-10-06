@@ -58,7 +58,7 @@ export default function LoginForm({
         <form className={cn("p-6 md:p-8",className)} action={signInAction}>
            <div className="grid gap-6">
 
-                <fieldset className="grid grid-cols-1 gap-2">
+                <fieldset className="form-field">
                     <Label className="text-[14px]" htmlFor="email">Email</Label>
                     <Input
                         id="email"
@@ -75,7 +75,7 @@ export default function LoginForm({
 
                 </fieldset>
 
-                <fieldset className="grid grid-cols-1 gap-2">
+                <fieldset className="form-field">
                     <Label className=" text-[14px]" htmlFor="password">Password</Label>
                     <InputPassword
                         id="password"
@@ -90,7 +90,7 @@ export default function LoginForm({
 
                 </fieldset>
 
-                <fieldset className="grid grid-cols-1 gap-2 mx-1">
+                <fieldset className="form-field mx-1">
                     <p className="text-[14px] flex gap-1.5">
                         <span>Don&apos;t have an account?</span>
                         <Link href="/register" className=" text-primary hover:underline transition transition-all">Sign up</Link>

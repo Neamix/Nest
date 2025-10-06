@@ -36,6 +36,7 @@ export type LoginActionResult = {
     data: UserAuthStateType | null;
 };
 
+
 export type UserLoginType = Pick<UserType, 'email' | 'password'>;
 export type UserRegisterType = Pick<UserType, 'first_name' | 'last_name' | 'email' | 'phone' | 'country_code'> & { confirm_password: string | null };
 export type UserStateType = UserType & { setUser: (userData: Partial<UserType>) => void; };

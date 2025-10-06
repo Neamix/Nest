@@ -99,7 +99,7 @@ export default function RegisterForm({
 
                 </fieldset>
 
-                <fieldset className="grid grid-cols-1 gap-2">
+                <fieldset className="form-field">
                     <Label className="mb-2 text-[13px]" htmlFor="email">Email</Label>
                     <Input
                         id="email"
@@ -147,7 +147,7 @@ export default function RegisterForm({
                 </fieldset>
 
                 <div className="flex flex-col justify-end">
-                    <fieldset className="grid grid-cols-1 gap-2 mx-1">
+                    <fieldset className="form-field mx-1">
                         <p className="text-[14px] flex gap-1.5">
                             <span>Already have an account? </span>
                             <Link href="/login" className=" text-primary hover:underline transition transition-all">Sign in</Link>

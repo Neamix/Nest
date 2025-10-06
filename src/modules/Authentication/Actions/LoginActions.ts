@@ -4,23 +4,28 @@ import { callApi } from "@/lib/callApi";
 import { cookies } from "next/headers";
 import { UserLoginType,LoginActionResult } from "../types";
 
-export const LoginAction = async function ({ email,password}: UserLoginType): Promise<LoginActionResult> {
+export const LoginAction = async function ({ email, password }: UserLoginType): Promise<LoginActionResult> {
     try {
-        // Call the login API
         const response = await callApi({
             endpoint: "authentication/login",
             method: "POST",
-            data: {
-                email,
-                password,
-            }
+            data: { email, password }
         });
 
-        // Function to set error message in the calling component
         if (!response.status) {
             return {
                 success: false,
-                error: {email: "Invalid credentials. Please try again."},
+                error:  { email: "Invalid email or password" },
+                data: null
+            };
+        }
+
+        // Validate response shape
+        if (!response.response?.data?.token) {
+            console.error("Invalid API response shape:", response);
+            return {
+                success: false,
+                error: { general: "Server error occurred" },
                 data: null
             };
         }
@@ -32,20 +37,19 @@ export const LoginAction = async function ({ email,password}: UserLoginType): Pr
             httpOnly: true,
             secure: process.env.APP_ENV === 'production',
             sameSite: 'strict',
-            maxAge: 60 * 60 * 24 * 7 * 30 // 35 days
+            maxAge: 60 * 60 * 24 * 30 // 30 days
         });
 
-
-        // On successful login, return user data
         return {
             success: true,
             error: null,
             data: response.response.data
         };
     } catch (error) {
+        console.error("Login action error:", error);
         return {
             success: false,
-            error: "Network error. Please check your connection and try again.",
+            error: { email: "Network error. Please try again." },
             data: null
         };
     }

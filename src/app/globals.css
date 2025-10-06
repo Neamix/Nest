@@ -165,4 +165,8 @@
   .form-container {
     @apply flex flex-col justify-center h-screen gap-6  m-auto font-lato ;
   }
+
+  .form-field {
+    @apply flex flex-col gap-2 w-full;
+  }
 }
