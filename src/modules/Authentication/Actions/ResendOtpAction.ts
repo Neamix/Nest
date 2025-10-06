@@ -3,38 +3,32 @@
 import { callApi } from "@/lib/callApi";
 import { ForgetPasswordType, UserAuthStateType } from "../types";
 
-export const ForgetPasswordAction = async function ({ email }: ForgetPasswordType): Promise<UserAuthStateType> {
+export const ResendOtpAction = async function ({ email }: ForgetPasswordType): Promise<UserAuthStateType> {
     try {
-        // Call the forget password API
         const response = await callApi({
             endpoint: "authentication/forget-password",
             method: "POST",
-            data: {
-                email,
-            }
+            data: { email }
         });
-        console.log("ForgetPasswordAction response:", response);
-        // Function to set error message in the calling component
+
         if (!response.status) {
             return {
                 success: false,
-                error: "invalid_email",
+                error:  { email: "Otp not correct" },
                 data: null
             };
         }
-        
-        // On successful forget password request, return user data
+
         return {
             success: true,
             error: null,
             data: response.response.data
         };
     } catch (error) {
-            console.log("ForgetPasswordAction called with email:", email);
-
+        console.error("Login action error:", error);
         return {
             success: false,
-            error: "Network error. Please check your connection and try again.",
+            error: { email: "Network error. Please try again." },
             data: null
         };
     }

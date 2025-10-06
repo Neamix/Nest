@@ -45,7 +45,7 @@ export default function OtpPasswordPage() {
                         </p>
                     </div>
 
-                    <OtpPasswordForm />
+                    <OtpPasswordForm email={email} />
                     
                 </div>
             </CardContent>
