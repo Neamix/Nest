@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import zodValidateHandler from "@/lib/zod/zodValidateHandler";
 import { LoginAction } from "@/modules/Authentication/Actions/LoginActions";
 import { LoginSchema } from "@/modules/Authentication/Schema/LoginSchema";
-import { UserLoginType, UserType } from "@/modules/Authentication/types";
+import { UserLoginType } from "@/modules/Authentication/types";
 import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
 import { useActionState, useState } from "react";
@@ -93,7 +93,7 @@ export default function LoginForm({
                 <fieldset className="form-field mx-1">
                     <p className="text-[14px] flex gap-1.5">
                         <span>Don&apos;t have an account?</span>
-                        <Link href="/register" className=" text-primary hover:underline transition transition-all">Sign up</Link>
+                        <Link href="/register" className=" text-primary hover:underline transition-all">Sign up</Link>
                     </p>
 
                     <LoadingButton className="mt-2" loading={isPending}  >

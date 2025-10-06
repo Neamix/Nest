@@ -1,6 +1,3 @@
-import { ResponseType } from "@/modules/genericTypes";
-import { stat } from "fs";
-
 export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, method = "POST", data = {}}: 
     {endpoint: string, store?: {type: "isr" | "ssr" | "static", revalidate?: number}, headers?: Record<string, string>, method?: string, data?: unknown}) {
     const { type, revalidate } = store;
@@ -14,6 +11,8 @@ export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, me
 
     // Build fetch options based on store type'
     let body: string | null = null;
+        console.log("dasd",body);
+
     if (method !== "GET") {
         body = JSON.stringify(data);
     }
@@ -22,6 +21,7 @@ export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, me
         method,
         headers: {
             "Content-Type": "application/json",
+            "Accept": "application/json",
             ...headers,
         },
         body: body,

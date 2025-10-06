@@ -12,6 +12,7 @@ export interface UserType {
     avatar: string | null;
     device_token: string;
     password?: string;
+    hash_token?: string;
 } 
 
 export type UserAuthStateType = {
@@ -36,6 +37,10 @@ export type LoginActionResult = {
     data: UserAuthStateType | null;
 };
 
+export type ResetPasswordType = {
+    password: string;
+    confirm_password: string;
+};
 
 export type UserLoginType = Pick<UserType, 'email' | 'password'>;
 export type UserRegisterType = Pick<UserType, 'first_name' | 'last_name' | 'email' | 'phone' | 'country_code'> & { confirm_password: string | null };

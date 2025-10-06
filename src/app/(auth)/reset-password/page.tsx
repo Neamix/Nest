@@ -1,7 +1,24 @@
+"use client"
 import { Card, CardContent } from "@/components/ui/card"
 import Image from "next/image"
+import TermsDialog from "@/components/blocks/Dialog/termsDialog"
+import PrivacyDialog from "@/components/blocks/Dialog/privacyDialog"
 import ForgetPasswordForm from "@/components/blocks/form/FrogetPasswordForm"
-export default async function LoginPage() {
+import ResetPasswordForm from "@/components/blocks/form/ResetPasswdForm"
+import { use } from "react"
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation"
+export default  function LoginPage() {
+    const params = useSearchParams();
+    const email = params.get("email");
+    const hash_token = params.get("hash_token");
+    const router = useRouter();
+
+    if (!email || !hash_token) {
+        router.push("/login");
+        return null;
+    }
+
     return (
         <Card className="overflow-hidden p-0 mb-6">
             <CardContent className="grid p-0 md:grid-cols-1">
@@ -16,13 +33,13 @@ export default async function LoginPage() {
                                 priority
                             />
                         </div>
-                        <h1 className="text-2xl font-bold">Forget Password</h1>
+                        <h1 className="text-2xl font-bold">Reset Password</h1>
                         <p className="text-muted-foreground text-base">
-                            Reset your password by entering your email below.
+                            Enter the new password for your account
                         </p>
                     </div>
 
-                    <ForgetPasswordForm />
+                    <ResetPasswordForm email={email} hash_token={hash_token} />
                 </div>
             </CardContent>
         </Card>

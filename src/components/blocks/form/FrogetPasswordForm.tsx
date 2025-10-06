@@ -3,15 +3,14 @@
 import LoadingButton from "@/components/reactive-components/loading-btn";
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils";
-import useAuthStore from "@/modules/Authentication/Stores/store";
 import { UserType } from "@/modules/Authentication/types";
 import { Label } from "@radix-ui/react-label"
 import Link from "next/link";
 import { useActionState, useState } from "react";
-import z from "zod";
 import { useRouter } from "next/navigation";
 import { ForgetPasswordSchema } from "@/modules/Authentication/Schema/ForgetPasswordSchema";
 import { ForgetPasswordAction } from "@/modules/Authentication/Actions/ForgetPasswordAction";
+import zodValidateHandler from "@/lib/zod/zodValidateHandler";
 
 export default function ForgetPasswordForm({
     className,
@@ -23,46 +22,28 @@ export default function ForgetPasswordForm({
 
     // Action handler for form submission
     const handleForgetAction = async (previousState: Pick<UserType, "email">, formData: FormData): Promise<Pick<UserType, "email">> => {
-        // reset errors
+        // Reset previous error messages
         setForgetErrorMsg({});
-        const { email } = Object.fromEntries(formData.entries());
 
-        // Validate user data 
-        const userDataValidation = ForgetPasswordSchema.safeParse({ email});
-        if (!userDataValidation.success) {
-            const tree = z.treeifyError(userDataValidation.error);
-            setForgetErrorMsg({
-                email: tree.properties?.email?.errors?.[0] || "",
-            });
-            return { email: email as string };
+        // Validate form data using Zod schema
+        const [errorsReturn, isValid] = zodValidateHandler(formData, ForgetPasswordSchema);
+        if (!isValid) {
+            setForgetErrorMsg(errorsReturn);
+            return { ...previousState, ...Object.fromEntries(formData) } as Pick<UserType, "email">;
         }
 
-
-        // Forget password action call
-        const response = await ForgetPasswordAction({ email: email as string });
+        // Call the ForgetPasswordAction
+        const response = await ForgetPasswordAction({ email: formData.get("email") as string });
         if (response?.error) {
-
-            if (response.error === "invalid_email") {
-                setForgetErrorMsg({
-                    email: "We can't find a user with that email address.",
-                });
-            } else if (typeof response.error === "object") {
-                setForgetErrorMsg(Object.fromEntries(
-                    Object.entries(response.error).map(([key, value]) => [key, value?.toString() || ""])
-                ));
-            }
-
-            return { email: email as string };
+            setForgetErrorMsg(response.error as Record<string, string>);
+            return { ...previousState, ...Object.fromEntries(formData) } as Pick<UserType, "email">;
         }
 
-        // Save data to store
-        if (response?.data) {
-            setForgetErrorMsg({});
-            useAuthStore.getState().setUser(response.data);
-            router.push("/");
-        }
-            
-        return { email: email as string };
+        // On successful submission, clear the form and redirect if necessary
+        setForgetErrorMsg({});
+        router.push("/otp-password?email=" + formData.get("email"));
+
+        return { email: "" };
     }
 
     const [state, formAction, isPending] = useActionState(handleForgetAction, { email: "" });

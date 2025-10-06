@@ -6,10 +6,11 @@ import { UserLoginType,LoginActionResult } from "../types";
 
 export const LoginAction = async function ({ email, password }: UserLoginType): Promise<LoginActionResult> {
     try {
+        const device_token = "test_device_token"; // Replace with actual device token logic if needed
         const response = await callApi({
             endpoint: "authentication/login",
             method: "POST",
-            data: { email, password }
+            data: { email, password, device_token }
         });
 
         if (!response.status) {

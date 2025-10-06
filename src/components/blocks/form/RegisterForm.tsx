@@ -150,7 +150,7 @@ export default function RegisterForm({
                     <fieldset className="form-field mx-1">
                         <p className="text-[14px] flex gap-1.5">
                             <span>Already have an account? </span>
-                            <Link href="/login" className=" text-primary hover:underline transition transition-all">Sign in</Link>
+                            <Link href="/login" className=" text-primary hover:underline transition-all">Sign in</Link>
                         </p>
                     </fieldset>
 
