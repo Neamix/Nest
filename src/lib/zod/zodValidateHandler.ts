@@ -1,4 +1,3 @@
-import { RegisterSchema } from "@/modules/Authentication/Schema/RegisterSchema";
 import zodErrorHandler from "./zodErrorHandler";
 import z from "zod";
 

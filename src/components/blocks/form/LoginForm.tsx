@@ -76,7 +76,10 @@ export default function LoginForm({
                 </fieldset>
 
                 <fieldset className="form-field">
-                    <Label className=" text-[14px]" htmlFor="password">Password</Label>
+                    <div className="flex items-center justify-between">
+                        <Label className="text-[14px]" htmlFor="password">Password</Label>
+                        <Link href="/forget-password" className="text-sm text-primary hover:underline transition-all">Forgot password?</Link>
+                    </div>
                     <InputPassword
                         id="password"
                         name="password"

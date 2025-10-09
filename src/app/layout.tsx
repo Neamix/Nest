@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Lato, Quicksand } from "next/font/google";
+import { Lato, Quicksand } from "next/font/google";
 import "./globals.css";
 import MeProvider from "@/Providers/MeProvider";
 import { meAction } from "@/modules/Authentication/Actions/MeAction";
@@ -29,6 +29,7 @@ export default async function RootLayout({
 }>) {
   const authenticatedUser = await meAction();
   const userData: UserType | null = authenticatedUser.data ?? null;
+  
   return (
     <html lang="en">
       <body 
