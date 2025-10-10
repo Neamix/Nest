@@ -20,6 +20,7 @@ export const meAction = async function (): Promise<UserAuthStateType> {
     });
 
     if (!userResponse.status) {
+        cookieStore.delete("__client_token");
         return { success: false, data: null, error: "User not found" };
     }
 
