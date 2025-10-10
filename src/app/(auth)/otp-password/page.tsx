@@ -4,12 +4,10 @@ import OtpPasswordForm from "@/components/blocks/form/OtpPasswordForm";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { useEffect } from "react";
-import useAuthStore from "@/modules/Authentication/Stores/store";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export default function OtpPasswordPage() {
-    const authStore = useAuthStore((store) => store.user);
     const searchParams = useSearchParams();
     const email = searchParams.get("email") || "";
     const router = useRouter();

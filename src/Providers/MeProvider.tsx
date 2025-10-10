@@ -4,9 +4,9 @@ import { UserType } from "@/modules/Authentication/types";
 import { useEffect } from "react";
 
 export default function MeProvider({ children, userData }: { children: React.ReactNode; userData: UserType | null }) {
-    const setUser = useAuthStore((store) => store.setUser);
-    const clearUser = useAuthStore((store) => store.clearUser);
-    const id = useAuthStore((store) => store.user?.id);
+  const setUser = useAuthStore((store) => store.setUser);
+  const clearUser = useAuthStore((store) => store.clearUser);
+  const id = useAuthStore((store) => store.user?.id);
 
   useEffect(() => {
     if (userData) {
