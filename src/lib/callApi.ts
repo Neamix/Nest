@@ -1,5 +1,5 @@
 export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, method = "POST", data = {}}: 
-    {endpoint: string, store?: {type: "isr" | "ssr" | "static", revalidate?: number}, headers?: Record<string, string>, method?: string, data?: unknown}) {
+    {endpoint: string, store?: {type: "isr" | "ssr" | "static", revalidate?: number, tag?: string}, headers?: Record<string, string>, method?: string, data?: unknown}) {
     const { type, revalidate } = store;
 
     // Get API URL - prefer server-side, fallback to client-side
@@ -29,7 +29,7 @@ export async function callApi({endpoint, store = {type: "ssr"}, headers = {}, me
 
     // Handle different store types
     if (type === "isr" && revalidate) {
-        fetchOptions.next = { revalidate: revalidate };
+        fetchOptions.next = { revalidate: revalidate,tags: store.tag ? [store.tag] : [] };
     } else if (type === "ssr") {
         fetchOptions.cache = "no-store";
     } else if (type === "static") {

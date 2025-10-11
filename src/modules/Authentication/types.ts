@@ -42,6 +42,13 @@ export type ResetPasswordType = {
     confirm_password: string;
 };
 
+
+export type UserPhonePropsType = {
+    countryCode: string;
+    phoneNumber: string;
+};
+
+export type UpdateProfileType = Pick<UserType, 'id' | 'email' | 'phone' | 'country_code' | 'avatar' | 'first_name' | 'last_name'>;
 export type UserLoginType = Pick<UserType, 'email' | 'password'>;
 export type UserRegisterType = Pick<UserType, 'first_name' | 'last_name' | 'email' | 'phone' | 'country_code'> & { confirm_password: string | null };
 export type UserStateType = UserType & { setUser: (userData: Partial<UserType>) => void; };

@@ -13,6 +13,7 @@ export const meAction = async function (): Promise<UserAuthStateType> {
     const userResponse = await callApi({
         endpoint: "me",
         method: "GET",
+        store: { type: "isr", revalidate: 10, tag: "me" },
         headers: {
             "Accept": "application/json",
             "Authorization": `Bearer ${token}`
@@ -23,7 +24,6 @@ export const meAction = async function (): Promise<UserAuthStateType> {
         cookieStore.delete("__client_token");
         return { success: false, data: null, error: "User not found" };
     }
-    console.log("User Response:", userResponse);
     const user: UserType = userResponse.response.data;
     return { success: true, data: user, error: null };
 }
